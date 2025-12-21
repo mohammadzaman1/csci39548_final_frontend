@@ -24,10 +24,15 @@ export default function NavBar() {
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1 }}>
-                {/* Temp to see if logged in or not */}
+                
+               {/* Temp to see if logged in or not */}
                <Typography variant="body2" sx={{ mr: 2 }}>
                   {user ? `Hi, ${user.name}` : "Not logged in"}
                </Typography>
+
+               <Button color="inherit" component={RouterLink} to="/dashboard">
+                  Dashboard
+               </Button>
 
                <Button color="inherit" component={RouterLink} to="/internships">
                   Browse
