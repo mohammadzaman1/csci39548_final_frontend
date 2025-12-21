@@ -1,7 +1,12 @@
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 
 export default function NavBar() {
+
+    const user = useSelector((state) => state.auth.user);
+
    return (
       <AppBar position="static" elevation={0}>
          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -19,6 +24,11 @@ export default function NavBar() {
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1 }}>
+                {/* Temp to see if logged in or not */}
+               <Typography variant="body2" sx={{ mr: 2 }}>
+                  {user ? `Hi, ${user.name}` : "Not logged in"}
+               </Typography>
+
                <Button color="inherit" component={RouterLink} to="/internships">
                   Browse
                </Button>
