@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import AppLayout from "./layouts/AppLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 export default function App() {
    return (
@@ -14,7 +16,15 @@ export default function App() {
             <Route path="/internships" element={<Internships />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            {/* Prevents going to dashboard if nto logged in */}
+            <Route
+               path="/dashboard"
+               element={
+                  <ProtectedRoute>
+                     <Dashboard />
+                  </ProtectedRoute>
+               }
+            />
          </Route>
 
          <Route path="*" element={<Navigate to="/" replace />} />

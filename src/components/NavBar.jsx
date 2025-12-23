@@ -1,11 +1,11 @@
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../store/authSlice";
 
 export default function NavBar() {
-
-    const user = useSelector((state) => state.auth.user);
+   const user = useSelector((state) => state.auth.user);
+   const dispatch = useDispatch();
 
    return (
       <AppBar position="static" elevation={0}>
@@ -24,30 +24,46 @@ export default function NavBar() {
             </Typography>
 
             <Box sx={{ display: "flex", gap: 1 }}>
-                
-               {/* Temp to see if logged in or not */}
-               <Typography variant="body2" sx={{ mr: 2 }}>
-                  {user ? `Hi, ${user.name}` : "Not logged in"}
-               </Typography>
-
-               <Button color="inherit" component={RouterLink} to="/dashboard">
-                  Dashboard
-               </Button>
-
                <Button color="inherit" component={RouterLink} to="/internships">
                   Browse
                </Button>
-               <Button color="inherit" component={RouterLink} to="/login">
-                  Login
-               </Button>
-               <Button
-                  variant="outlined"
-                  color="inherit"
-                  component={RouterLink}
-                  to="/register"
-               >
-                  Sign up
-               </Button>
+
+               {/* If logged in, show Dashboard + Logout */}
+               {user ? (
+                  <>
+                     <Button
+                        color="inherit"
+                        component={RouterLink}
+                        to="/dashboard"
+                     >
+                        Dashboard
+                     </Button>
+                     <Button
+                        color="inherit"
+                        onClick={() => {
+                           // Clears Redux + localStorage auth (your authSlice handles this)
+                           dispatch(logout());
+                        }}
+                     >
+                        Logout
+                     </Button>
+                  </>
+               ) : (
+                  /* If logged out, show Login + Sign Up */
+                  <>
+                     <Button color="inherit" component={RouterLink} to="/login">
+                        Login
+                     </Button>
+                     <Button
+                        variant="outlined"
+                        color="inherit"
+                        component={RouterLink}
+                        to="/register"
+                     >
+                        Sign up
+                     </Button>
+                  </>
+               )}
             </Box>
          </Toolbar>
       </AppBar>
