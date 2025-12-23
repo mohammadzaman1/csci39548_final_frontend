@@ -9,14 +9,13 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { addApplication } from "../store/applicationsSlice";
 import { Snackbar, Alert } from "@mui/material";
+import api from "../services/api";
 
 
 export default function Internships() {
    const [search, setSearch] = useState("");
-   const dispatch = useDispatch();
+  
 
    const internships = useSelector((state) => state.internships.items);
    const user = useSelector((state) => state.auth.user);
@@ -72,16 +71,13 @@ export default function Internships() {
                            <Button
                               variant="contained"
                               disabled={!user}
-                              onClick={() => {
-                                 dispatch(
-                                    addApplication({
-                                       internshipId: internship.id,
-                                       title: internship.title,
-                                       company: internship.company,
-                                       location: internship.location,
-                                       status: "Saved",
-                                    })
-                                 );
+                              onClick={async () => {
+                                 await api.post("/applications", {
+                                    internshipId: internship.id,
+                                    title: internship.title,
+                                    company: internship.company,
+                                    location: internship.location,
+                                 });
                                  setOpen(true);
                               }}
                            >

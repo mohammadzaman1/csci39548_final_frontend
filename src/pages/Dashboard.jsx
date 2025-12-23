@@ -10,7 +10,9 @@ import {
    Button,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { updateStatus, removeApplication } from "../store/applicationsSlice";
+import { useEffect } from "react";
+import api from "../services/api";
+import { setApplications } from "../store/applicationsSlice";
 
 const statuses = ["Saved", "Applied", "Interview", "Offer", "Rejected"];
 
@@ -18,6 +20,15 @@ export default function Dashboard() {
    const dispatch = useDispatch();
    const user = useSelector((state) => state.auth.user);
    const apps = useSelector((state) => state.applications.items);
+
+   const load = async () => {
+      const res = await api.get("/applications");
+      dispatch(setApplications(res.data));
+   };
+
+   useEffect(() => {
+      if (user) load();
+   }, [user]);
 
    if (!user) {
       return <Typography>Please log in to view your dashboard.</Typography>;
@@ -48,14 +59,15 @@ export default function Dashboard() {
                            <Select
                               label="Status"
                               value={app.status}
-                              onChange={(e) =>
-                                 dispatch(
-                                    updateStatus({
-                                       internshipId: app.internshipId,
+                              onChange={async (e) => {
+                                 await api.patch(
+                                    `/applications/${app.internshipId}`,
+                                    {
                                        status: e.target.value,
-                                    })
-                                 )
-                              }
+                                    }
+                                 );
+                                 load();
+                              }}
                            >
                               {statuses.map((s) => (
                                  <MenuItem key={s} value={s}>
@@ -67,9 +79,12 @@ export default function Dashboard() {
 
                         <Button
                            variant="outlined"
-                           onClick={() =>
-                              dispatch(removeApplication(app.internshipId))
-                           }
+                           onClick={async () => {
+                              await api.delete(
+                                 `/applications/${app.internshipId}`
+                              );
+                              load();
+                           }}
                         >
                            Remove
                         </Button>
